@@ -57,9 +57,8 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 // --- Basic Routes ---
 
 // Root route: Redirects to /admin/index.html if logged in, otherwise requireAdminAuth redirects to /login.html
-app.get('/', requireAdminAuth, (req, res) => {
-    // If we reach here, user is authenticated by requireAdminAuth
-    res.redirect('/admin/index.html');
+app.get('/', (req, res) => {
+    res.redirect('/login.html');
 });
 
 // Redirect /login to the static HTML file
@@ -120,9 +119,14 @@ app.listen(port, '0.0.0.0', () => {
     // Check if running in Hugging Face Space
     if (process.env.HUGGING_FACE === '1' && process.env.SPACE_HOST) {
         const adminUrl = `https://${process.env.SPACE_HOST}/admin`;
+        const endpointUrl = `https://${process.env.SPACE_HOST}/v1`;
         console.log(`Hugging Face Space Admin UI: ${adminUrl}`);
+        console.log(`Hugging Face Space Endpoint: ${endpointUrl}`);
     } else {
         // Fallback for local or other environments
-        console.log(`Admin UI should be available at http://localhost:${port}/admin (or the server's public address)`);
+        const adminUrl = `http://localhost:${port}/admin`;
+        const endpointUrl = `http://localhost:${port}/v1`;
+        console.log(`Admin UI available at: ${adminUrl} (or the server's public address)`);
+        console.log(`API Endpoint available at: ${endpointUrl} (or the server's public address)`);
     }
 });
